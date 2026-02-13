@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).parent
 SOURCE_PATH = BASE_DIR / "snaffledShares.json"
 SCHEMA_PATH = BASE_DIR / "snafflerSchema.tmp.json"
 OUTPUT_PATH = BASE_DIR / "snaffledShares.powerbi.json"
+SHOULD_EXCLUDE_RAW_EVENT_PROPERTIES = True
 
 
 def load_source() -> Dict[str, Any]:
@@ -93,7 +94,8 @@ def normalize_entry(entry: Dict[str, Any]) -> Dict[str, Any]:
     if severity:
         # Carry original message-level data plus normalized event block.
         normalized["event"] = {"severity": severity, **payload}
-        normalized["rawEventProperties"] = event_props  # keep original for traceability
+        if not SHOULD_EXCLUDE_RAW_EVENT_PROPERTIES:
+            normalized["rawEventProperties"] = event_props  # keep original for traceability
 
     return normalized
 
